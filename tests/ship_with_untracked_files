@@ -1,0 +1,27 @@
+# setup
+touch temp.txt
+if [ ! -e "temp.txt" ]
+then
+	echo "ERROR: unable to create temp file."
+	exit 1
+fi
+
+# try
+output="$(scripts/ship.sh -t)"
+
+# cleanup
+rm -f temp.txt
+
+# verify
+result="$(echo ${output} | grep 'test complete')"
+
+# report
+if [ "$result" != "" ]
+then
+	printf "%-50s PASS\n" "$0"
+	exit 0
+else
+	printf "%-50s FAIL\n" "$0"
+	exit 1
+fi
+
