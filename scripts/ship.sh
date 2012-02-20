@@ -2,15 +2,19 @@
 # Git workflow ship script
 CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
 echo "current branch is: ${CURRENT}"
-remoteBranches="$(git branch -r | tr '/' ' ' | awk '{print $2}')"
+remoteBranches="$(git branch -r | grep -v 'HEAD' | tr '/' ' ' | awk '{print $2}')"
 for branch in ${remoteBranches}
 do
 	if [ "${CURRENT}" == "$(git branch --contains ${branch} | grep '\*' | awk '{print $2}')" ]
 	then
-		currentBranches="$(git branch --contains ${branch} | grep -v '\*' | awk '{print $1}')"
-		remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
+		remote=$branch
 	fi
 done
+if [ "" == "${remote}" ] 
+then
+	currentBranches="$(git branch --contains ${CURRENT} | grep -v '\*' | awk '{print $1}')"
+	remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
+fi
 echo "remote branch is: ${remote}"
 if [ "${CURRENT}" == "${remote}" -o "" == "${remote}" ] 
 then

@@ -8,10 +8,14 @@ for branch in ${remoteBranches}
 do
 	if [ "${CURRENT}" == "$(git branch --contains ${branch} | grep '\*' | awk '{print $2}')" ]
 	then
-		currentBranches="$(git branch --contains ${branch} | grep -v '\*' | awk '{print $1}')"
-		remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
+		remote=$branch
 	fi
 done
+if [ "" == "${remote}" ] 
+then
+	currentBranches="$(git branch --contains ${CURRENT} | grep -v '\*' | awk '{print $1}')"
+	remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
+fi
 echo "remote branch is: ${remote}"
 if [ "${CURRENT}" == "${remote}" -o "" == "${remote}" ] 
 then
