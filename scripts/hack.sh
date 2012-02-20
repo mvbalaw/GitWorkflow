@@ -34,6 +34,14 @@ determine_remote_branch () {
 	remoteBranches="$(git branch -r | grep -v 'HEAD' | tr '/' ' ' | awk '{print $2}')"
 	for branch in ${remoteBranches}
 	do
+	    if [ "${CURRENT}" == "${branch}" ] 
+		then
+			remote=""
+			return
+		fi
+	done
+	for branch in ${remoteBranches}
+	do
 		if [ "${CURRENT}" == "$(git branch --contains ${branch} | grep '\*' | awk '{print $2}')" ]
 		then
 			remote=$branch
