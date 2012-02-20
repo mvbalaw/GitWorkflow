@@ -14,6 +14,23 @@ echo "current branch is: ${CURRENT}"
 determine_remote_branch
 echo "remote branch is: ${remote}"
 assert_working_on_feature_branch
+
+mode="live"
+while getopts "t" optname
+do
+	case "$optname" in
+		"t")
+			mode="test"
+			;;
+	esac
+done
+
+if [ "$mode" == "test" ]
+then
+	echo "-- test complete --"
+	exit 0
+fi
+
 set -x
 
 # do the work
