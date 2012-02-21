@@ -8,7 +8,12 @@ output="$(scripts/ship.sh -t 2>&1)"
 
 # cleanup
 git checkout README.md
-git checkout ${CURRENT} >& /dev/null
+git checkout $CURRENT >& /dev/null
+if [ "${CURRENT}" != "$(git branch | grep '\*' | awk '{print $2}')" ]
+then
+	echo "ERROR: 'git checkout $CURRENT' failed to return to original branch."
+	exit 1
+fi
 
 # verify
 result="$(echo ${output} | grep 'should be run from a feature branch')"

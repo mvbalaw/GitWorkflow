@@ -14,7 +14,12 @@ output="$(scripts/ship.sh -t)"
 
 # cleanup
 rm -f temp.txt
-git checkout ${CURRENT} >& /dev/null
+git checkout $CURRENT >& /dev/null
+if [ "${CURRENT}" != "$(git branch | grep '\*' | awk '{print $2}')" ]
+then
+	echo "ERROR: 'git checkout $CURRENT' failed to return to original branch."
+	exit 1
+fi
 git branch -d ${branch} >& /dev/null
 
 # verify
