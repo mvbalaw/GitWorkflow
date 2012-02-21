@@ -2,12 +2,13 @@ These are the Git workflow scripts we use. They came from [here][deadsimple] and
 
 ## Usage
 
-Name these scripts hack.sh and ship.sh and put them in your bash bin directory (e.g. C:\Users\USERNAME\bin). Then use them from the bash command line after you checkin. For example:
+Copy the contents of the scripts directory to bash bin directory (e.g. C:\Users\USERNAME\bin). Then use them from the bash command line after you checkin. For example:
 
 
 	git add .
 	git commit -am"fixed bug #..."
 	hack.sh
+	# fix merge conflicts if any
 	ship.sh
 
 ## License		
