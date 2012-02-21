@@ -1,0 +1,25 @@
+# setup
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+git checkout -b master >& /dev/null
+echo "#" >> README.md
+
+# try
+output="$(scripts/hack.sh -t 2>&1)"
+
+# cleanup
+git checkout README.md
+git checkout ${CURRENT} >& /dev/null
+
+# verify
+result="$(echo ${output} | grep 'should be run from a feature branch')"
+
+# report
+if [ "$result" != "" ]
+then
+	printf "%-50s PASS\n" "$0"
+	exit 0
+else
+	printf "%-50s FAIL\n" "$0"
+	exit 1
+fi
+
