@@ -1,6 +1,6 @@
 # setup
 CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
-git checkout -b master >& /dev/null
+git checkout master >& /dev/null
 echo "#" >> README.md
 
 # try
