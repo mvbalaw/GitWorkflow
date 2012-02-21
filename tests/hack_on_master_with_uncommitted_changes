@@ -5,7 +5,7 @@ echo "#" > README.md
 git add README.md >& /dev/null
 
 # try
-output="$(scripts/hack.sh -t 2>&1)"
+output="$(../scripts/hack.sh -t 2>&1)"
 
 # cleanup
 git checkout HEAD -- README.md

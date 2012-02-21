@@ -5,7 +5,7 @@ git checkout -b "${branch}" >& /dev/null
 echo "#" >> README.md
 
 # try
-output="$(scripts/ship.sh -t 2>&1)"
+output="$(../scripts/ship.sh -t 2>&1)"
 
 # cleanup
 git checkout README.md

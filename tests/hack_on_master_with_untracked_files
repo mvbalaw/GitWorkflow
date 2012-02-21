@@ -9,7 +9,7 @@ then
 fi
 
 # try
-output="$(scripts/hack.sh -t)"
+output="$(../scripts/hack.sh -t)"
 
 # cleanup
 rm -f temp.txt

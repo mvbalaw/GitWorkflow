@@ -10,7 +10,7 @@ then
 fi
 
 # try
-output="$(scripts/ship.sh -t)"
+output="$(../scripts/ship.sh -t)"
 
 # cleanup
 rm -f temp.txt

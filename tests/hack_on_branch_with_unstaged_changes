@@ -5,7 +5,7 @@ git checkout -b "${branch}" >& /dev/null
 echo "#" >> README.md
 
 # try
-output="$(scripts/hack.sh -t 2>&1)"
+output="$(../scripts/hack.sh -t 2>&1)"
 
 # cleanup
 git checkout README.md
