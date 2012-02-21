@@ -1,0 +1,40 @@
+# setup
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+git checkout master >& /dev/null
+gitCommit="$(git rev-parse HEAD)"
+git commit --allow-empty -m "test commit on master" >& /dev/null
+git checkout ${CURRENT} >& /dev/null
+
+# try
+output="$(scripts/hack.sh -t)"
+
+# cleanup
+git checkout master >& /dev/null
+git reset --hard HEAD~1 >& /dev/null
+checkGitCommit="$(git rev-parse HEAD)"
+if [ "$gitCommit" != "$checkGitCommit" ]
+then
+	echo "ERROR: 'git reset --hard HEAD~1' failed on master"
+	exit 1
+fi
+git checkout $CURRENT >& /dev/null
+if [ "${CURRENT}" != "$(git branch | grep '\*' | awk '{print $2}')" ]
+then
+	git checkout $CURRENT
+	echo "ERROR: 'git checkout $CURRENT' failed to return to original branch."
+	exit 1
+fi
+
+# verify
+result="$(echo ${output} | grep 'remote branch is: master')"
+
+# report
+if [ "$result" != "" ]
+then
+	printf "%-50s PASS\n" "$0"
+	exit 0
+else
+	printf "%-50s FAIL\n" "$0"
+	exit 1
+fi
+
