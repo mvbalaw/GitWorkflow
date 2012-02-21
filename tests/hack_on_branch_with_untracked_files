@@ -1,4 +1,7 @@
 # setup
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+branch="${CURRENT}_temp"
+git checkout -b "${branch}" >& /dev/null
 touch temp.txt
 if [ ! -e "temp.txt" ]
 then
@@ -11,6 +14,8 @@ output="$(scripts/hack.sh -t)"
 
 # cleanup
 rm -f temp.txt
+git checkout ${CURRENT} >& /dev/null
+git branch -d ${branch} >& /dev/null
 
 # verify
 result="$(echo ${output} | grep 'test complete')"

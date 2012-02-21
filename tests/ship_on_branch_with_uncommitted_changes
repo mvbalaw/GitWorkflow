@@ -1,0 +1,28 @@
+# setup
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+branch="${CURRENT}_temp"
+git checkout -b "${branch}" >& /dev/null
+echo "#" > README.md
+git add README.md >& /dev/null
+
+# try
+output="$(scripts/ship.sh -t 2>&1)"
+
+# cleanup
+git checkout HEAD -- README.md
+git checkout ${CURRENT} >& /dev/null
+git branch -d ${branch} >& /dev/null
+
+# verify
+result="$(echo ${output} | grep 'test complete')"
+
+# report
+if [ "$result" == "" ]
+then
+	printf "%-50s PASS\n" "$0"
+	exit 0
+else
+	printf "%-50s FAIL\n" "$0"
+	exit 1
+fi
+

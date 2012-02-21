@@ -1,11 +1,16 @@
 # setup
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+branch="${CURRENT}_temp"
+git checkout -b "${branch}" >& /dev/null
 echo "#" >> README.md
 
 # try
-output="$(scripts/hack.sh -t 2>&1)"
+output="$(scripts/ship.sh -t 2>&1)"
 
 # cleanup
 git checkout README.md
+git checkout ${CURRENT} >& /dev/null
+git branch -d ${branch} >& /dev/null
 
 # verify
 result="$(echo ${output} | grep 'test complete')"
