@@ -37,15 +37,45 @@ determine_remote_branch () {
 			return
 		fi
 	done
-	if [ "" == "${remote}" ] 
+	if [ -z "$remote" ] 
 	then
 		currentBranches="$(git branch --contains ${CURRENT} | grep -v '\*' | awk '{print $1}')"
 		remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
 	fi
+	if [ -z "$remote" ] 
+	then
+		mergeBases=""
+		for branch in ${remoteBranches}
+		do
+			mergeBase="$(git merge-base ${CURRENT} ${branch})"
+			if [ ! -z $mergeBase ]
+			then
+				if [ -z $mergeBases ]
+				then
+					mergeBases=$mergeBase
+				else
+					mergeBases="${mergeBases} ${mergeBase}"
+				fi
+			fi
+		done
+		
+		if [ ! -z $mergeBases ]
+		then
+			mostRecentMergeBase="$(git show -s --format='%ci %H' ${mergeBases} | sort -r | head -1 | awk '{print $4}')"
+			for branch in ${remoteBranches}
+			do
+				if [ "$(git merge-base ${CURRENT} ${branch})" == "${mostRecentMergeBase}" ]
+				then
+					remote=$branch
+					return
+				fi
+			done
+		fi
+	fi
 }
 
 assert_working_on_feature_branch () {
-	if [ "${CURRENT}" == "${remote}" -o "" == "${remote}" ] 
+	if [ "${CURRENT}" == "${remote}" -o -z "$remote" ] 
 	then
 		echo "This command should be run from a feature branch, not from ${CURRENT}."
 		exit 1;
