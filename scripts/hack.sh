@@ -8,22 +8,40 @@ die () {
 
 . "git.lib" || die 'unable to load git.lib library'
 
-CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
-echo "current branch is: ${CURRENT}"
-determine_remote_branch
-echo "remote branch is: ${remote}"
-assert_working_on_feature_branch
-require_clean_work_tree
-
 mode="live"
-while getopts "t" optname
+specifiedRemote=""
+while getopts "tr:" optname
 do
 	case "$optname" in
+		"r")
+			specifiedRemote=$OPTARG
+			echo "using specified remote branch: ${specifiedRemote}"
+			;;
 		"t")
 			mode="test"
 			;;
 	esac
 done
+
+CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
+echo "current branch is: ${CURRENT}"
+if [ ! -z "$specifiedRemote" ]
+then
+	remote=$specifiedRemote
+else
+	determine_remote_branch
+fi
+echo "remote branch is: ${remote}"
+if [ -z "$remote" ]
+then
+	echo "Unable to determine remote branch. Consider specifying it e.g.: hack.sh -r master"
+	echo "Please consider adding the ability to determine the correct remote branch given"
+	echo "your current state and submit a patch."
+	exit 1
+fi
+assert_working_on_feature_branch
+require_clean_work_tree
+
 
 if [ "$mode" == "test" ]
 then
