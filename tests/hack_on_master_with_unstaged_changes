@@ -19,7 +19,7 @@ fi
 result="$(echo ${output} | grep 'should be run from a feature branch')"
 
 # report
-if [ "$result" != "" ]
+if [ ! -z "$result" ]
 then
 	printf "%-50s PASS\n" "$0"
 	exit 0

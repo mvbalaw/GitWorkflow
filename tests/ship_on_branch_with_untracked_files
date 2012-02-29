@@ -1,6 +1,6 @@
 # setup
 CURRENT="$(git branch | grep '\*' | awk '{print $2}')"
-branch="${CURRENT}_temp"
+branch="temp"
 git checkout -b "${branch}" >& /dev/null
 touch temp.txt
 if [ ! -e "temp.txt" ]
@@ -20,13 +20,22 @@ then
 	echo "ERROR: 'git checkout $CURRENT' failed to return to original branch."
 	exit 1
 fi
-git branch -d ${branch} >& /dev/null
+git branch -D ${branch} >& /dev/null
 
-# verify
+# verify was run from branch
+result="$(echo ${output} | grep 'current branch is: temp')"
+# report
+if [ -z "$result" ]
+then
+	printf "%-50s FAIL\n\tDid not run on branch '${branch}'\n\n${output}\n${result}\n" "$0"
+	exit 1
+fi
+
+# verify found correct remote branch
 result="$(echo ${output} | grep 'test complete')"
 
 # report
-if [ "$result" != "" ]
+if [ ! -z "$result" ]
 then
 	printf "%-50s PASS\n" "$0"
 	exit 0
