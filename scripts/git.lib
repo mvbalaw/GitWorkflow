@@ -48,9 +48,9 @@ determine_remote_branch () {
 		for branch in ${remoteBranches}
 		do
 			mergeBase="$(git merge-base ${CURRENT} ${branch})"
-			if [ ! -z $mergeBase ]
+			if [ ! -z "$mergeBase" ]
 			then
-				if [ -z $mergeBases ]
+				if [ -z "$mergeBases" ]
 				then
 					mergeBases=$mergeBase
 				else
@@ -59,7 +59,7 @@ determine_remote_branch () {
 			fi
 		done
 		
-		if [ ! -z $mergeBases ]
+		if [ ! -z "$mergeBases" ]
 		then
 			mostRecentMergeBase="$(git show -s --format='%ci %H' ${mergeBases} | sort -r | head -1 | awk '{print $4}')"
 			for branch in ${remoteBranches}
