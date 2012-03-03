@@ -29,19 +29,8 @@ require_clean_work_tree () {
 
 determine_remote_branch () {
 	remoteBranches="$(git branch -r | grep -v 'HEAD' | tr '/' ' ' | awk '{print $2}')"
-	for branch in ${remoteBranches}
-	do
-		if [ "${CURRENT}" == "$(git branch --contains ${branch} | grep '\*' | awk '{print $2}')" ]
-		then
-			remote=$branch
-			return
-		fi
-	done
-	if [ -z "$remote" ] 
-	then
-		currentBranches="$(git branch --contains ${CURRENT} | grep -v '\*' | awk '{print $1}')"
-		remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
-	fi
+	currentBranches="$(git branch --contains ${CURRENT} | grep -v '\*' | awk '{print $1}')"
+	remote="$(echo ${remoteBranches} ${currentBranches} | tr ' ' '\n' | sort | uniq -c | grep "2" | awk '{print $2}' | head -1)"
 	if [ -z "$remote" ] 
 	then
 		mergeBases=""
